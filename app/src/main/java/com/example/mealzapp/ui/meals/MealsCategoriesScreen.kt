@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
@@ -22,24 +23,33 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import com.example.mealzapp.model.response.MealResponse
 import com.example.mealzapp.ui.theme.MealzAppTheme
-
+import com.example.mealzapp.ui.appBar.AppBar
 
 @Composable
 fun MealsCategoriesScreen(navigationCallback: (String) -> Unit) {
-    Surface(
-        modifier = Modifier
-            .fillMaxSize(),
-        color = Color.LightGray
-    ) {
-        val viewModel: MealsCategoriesViewModel = viewModel()
-        val meals = viewModel.mealsState.value
+    Scaffold(
+        topBar = {
+            AppBar(
+                title = "Categories",
+                icon = Icons.Default.Home,
+            ){}
+        }) {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize(),
+            color = Color.LightGray
+        ) {
+            val viewModel: MealsCategoriesViewModel = viewModel()
+            val meals = viewModel.mealsState.value
 
-        LazyColumn {
-            items(meals) {meal ->
-                MealCategory( meal, navigationCallback )
+            LazyColumn {
+                items(meals) {meal ->
+                    MealCategory( meal, navigationCallback )
+                }
             }
         }
     }
+
 }
 
 @Composable
