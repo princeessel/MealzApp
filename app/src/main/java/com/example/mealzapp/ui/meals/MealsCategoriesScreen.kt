@@ -13,8 +13,8 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,34 +22,55 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import com.example.mealzapp.model.response.MealResponse
+import com.example.mealzapp.ui.components.SearchView
 import com.example.mealzapp.ui.theme.MealzAppTheme
-import com.example.mealzapp.ui.appBar.AppBar
+import com.example.mealzapp.ui.components.appBar.AppBar
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Composable
 fun MealsCategoriesScreen(navigationCallback: (String) -> Unit) {
+    val textState = remember { mutableStateOf(TextFieldValue("")) }
     Scaffold(
         topBar = {
             AppBar(
                 title = "Categories",
                 icon = Icons.Default.Home,
-            ){}
+            ) {}
         }) {
         Surface(
             modifier = Modifier
                 .fillMaxSize(),
-            color = Color.LightGray
         ) {
             val viewModel: MealsCategoriesViewModel = viewModel()
-            val meals = viewModel.mealsState.value
+            val categories = viewModel.mealsState.value
+            var filteredCategories: List<MealResponse>
+            val searchText = textState.value.text
+            Column {
+                SearchView(state = textState)
+                LazyColumn {
+                    filteredCategories = if (searchText.isEmpty()) {
+                        categories
+                    } else {
+                        val resultList = ArrayList<MealResponse>()
+                        for (category in categories) {
+                            if(category.name.lowercase(Locale.getDefault())
+                                    .contains(searchText.lowercase(Locale.getDefault()))
+                            ){
+                                resultList.add(category)
+                            }
+                        }
+                        resultList
+                    }
 
-            LazyColumn {
-                items(meals) {meal ->
-                    MealCategory( meal, navigationCallback )
+                    items(filteredCategories) { filteredCategory ->
+                        MealCategory(filteredCategory, navigationCallback)
+                    }
                 }
+
             }
         }
     }
-
 }
 
 @Composable
@@ -75,12 +96,12 @@ fun MealCategory(meal: MealResponse, navigationCallback: (String) -> Unit) {
 
 @Composable
 fun CategoryContent(name: String, description: String?) {
-    var isExpanded by remember{ mutableStateOf(false)}
+    var isExpanded by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 4.dp)
-        ) {
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.8f)
@@ -106,7 +127,7 @@ fun CategoryContent(name: String, description: String?) {
                 .height(50.dp)
                 .padding(start = 4.dp),
             contentAlignment = Alignment.CenterEnd
-        ){
+        ) {
             Icon(
                 imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                 contentDescription = "Expand list",
@@ -141,6 +162,6 @@ fun CategoryImage(imageUrl: String) {
 @Composable
 fun DefaultPreview() {
     MealzAppTheme {
-        MealsCategoriesScreen({ })
+        MealsCategoriesScreen { }
     }
 }

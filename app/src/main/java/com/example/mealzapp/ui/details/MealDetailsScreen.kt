@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +18,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.example.mealzapp.model.response.MealResponse
-import com.example.mealzapp.ui.appBar.AppBar
+import com.example.mealzapp.ui.components.appBar.AppBar
 
 @Composable
 fun MealDetailsScreen(meal: MealResponse?, navigation: NavHostController?) {
@@ -39,7 +38,6 @@ fun MealDetailsScreen(meal: MealResponse?, navigation: NavHostController?) {
         }) {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = Color.LightGray
         ) {
             Column {
                 Row {
